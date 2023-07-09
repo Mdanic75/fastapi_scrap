@@ -1,0 +1,99 @@
+version: "3.8"
+services:
+  worker:
+    build: .
+    restart: always
+    command: [ "celery", "-A", "src.celery:celery_app", "worker", "-l", "info", "--autoscale", "1000" ]
+    volumes:
+      - .:/code
+    depends_on:
+      - redis
+      - elasticsearch
+    networks:
+      - app_net
+  web:
+    build: .
+    ports:
+      - "80:80"
+    volumes:
+      - .:/code
+    networks:
+      - app_net
+
+  redis:
+    image: redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - ./volumes/redis:/data
+    command: redis-server --appendonly yes
+    restart: always
+    environment:
+      #      - REDIS_REPLICATION_MODE=master
+      - TZ=Europe/Bucharest
+    networks:
+      - app_net
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.15.0
+    environment:
+      - discovery.type=single-node
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - "ELASTIC_PASSWORD=Teilor.24"
+      - xpack.security.enabled=true
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - esdata1:/usr/share/elasticsearch/data
+    ports:
+      - 9200:9200
+    networks:
+      - app_net
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:7.15.0
+    environment:
+      - ELASTICSEARCH_USERNAME=elastic
+      - ELASTICSEARCH_PASSWORD=Teilor.24
+    ports:
+      - 5601:5601
+    depends_on:
+      - elasticsearch
+    networks:
+      - app_net
+  flower:
+    image: mher/flower
+    restart: always
+    volumes:
+      - ./volumes/flower:/data
+    working_dir: /data
+    ports:
+      - "5555:5555"
+    environment:
+      CELERY_BROKER_URL: "redis://redis:6379"
+      CELERY_RESULT_BACKEND: "redis://redis:6379"
+      FLOWER_PORT: 5555
+      FLOWER_BASIC_AUTH: admin:Teilor.24
+      TZ: Europe/Bucharest
+    depends_on:
+      - redis
+      - worker
+    networks:
+      - app_net
+
+volumes:
+  esdata1:
+    driver: local
+
+networks:
+  app_net:
+    driver: bridge
+    driver_opts:
+      com.docker.network.enable_ipv6: "false"
+    ipam:
+      driver: default
+      config:
+        - subnet: 192.168.0.0/24

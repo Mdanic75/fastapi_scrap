@@ -1,0 +1,24 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+fastapi = "*"
+uvicorn = "*"
+starlette = "*"
+pydantic = "*"
+celery = {extras = ["redis"], version = "*"}
+pydantic-settings = "*"
+pika = "*"
+aiohttp = "*"
+beautifulsoup4 = "*"
+elasticsearch = "*"
+asgiref = "*"
+requests = "*"
+fastapi-elasticsearch = "*"
+
+[dev-packages]
+
+[requires]
+python_version = "3.10"
