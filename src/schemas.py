@@ -7,7 +7,7 @@ class DataExtractionSchema(BaseModel):
     domains: List[str]
 
 
-class BaseDocumentSchema(BaseModel):
+class CompanyDocumentSchema(BaseModel):
     domain: str
     phone_numbers: List[str] | None = []
     social_media_links: List[str] | None = []

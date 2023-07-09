@@ -3,7 +3,7 @@ import asyncio
 from typing import List
 import ssl
 import json
-from .schemas import DataExtractionSchema, LinkDocumentSchema, BaseDocumentSchema
+from .schemas import DataExtractionSchema, LinkDocumentSchema, CompanyDocumentSchema
 from .elastic_search import es_connection
 
 
@@ -14,7 +14,7 @@ def map_input_data(initial_data: DataExtractionSchema) -> List[LinkDocumentSchem
                                   domain=domain)
         es_connection.create(index="links", id=link.link, document=link.model_dump_json())
         links.append(link)
-        es_connection.create(index="domains", id=domain,
+        es_connection.create(index="companies", id=domain,
                              document={"domain": domain, "phone_numbers": [], "social_media_links": []})
     return links
 
@@ -43,7 +43,7 @@ def add_scrapped_data(domain: str, phone_numbers: List[str], social_media_links:
         '''
 
     es_connection.update(
-        index="domains",
+        index="companies",
         id=domain,
         body={
             "script": {

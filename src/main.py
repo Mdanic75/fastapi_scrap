@@ -27,6 +27,7 @@ def merge_data():
     csv_file_path = os.path.abspath('/code/src/sample-websites-company-names.csv')
     with open(csv_file_path, 'r') as file:
         csv_reader = csv.reader(file)
+        csv_reader.__next__()
         for row in csv_reader:
             payload = {
                 "company_commercial_name": row[1],
@@ -34,7 +35,7 @@ def merge_data():
                 "company_all_available_names": row[3]
             }
             try:
-                es_connection.update(index="domains", id=row[0], doc=payload)
+                es_connection.update(index="companies", id=row[0], doc=payload)
             except:
                 print(row[0])
 
