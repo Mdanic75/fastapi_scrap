@@ -13,7 +13,7 @@ După instalarea Docker, deschideți un terminal și navigați până în direct
 docker-compose up --build --scale worker=2
 
 
-Această comandă va construi imaginea Docker și va scala aplicația cu cinci muncitori.
+Această comandă va construi imaginea Docker și va scala aplicația cu doi workeri.
 
 ## 3. Utilizarea Aplicației
 
