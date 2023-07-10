@@ -50,3 +50,7 @@ După ce datele au fost scrapuite, puteți utiliza acest endpoint pentru a combi
 ### 5.3 /get_company_profile
 
 Acest endpoint este utilizat pentru a căuta și recupera profilurile companiilor. Faceți un request la `127.0.0.1:80/get_company_profile` pentru a căuta un profil.
+
+### 6. Accesare external services
+127.0.0.1:5555 flower pentru a monitoriza workerii username: admin parola Teilor.24
+127.0.0.1: 5601 kibana
